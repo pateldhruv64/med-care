@@ -66,7 +66,7 @@ app.use(cors({
 app.use(cookieParser());
 app.use(helmet());
 app.set('trust proxy', 1); // Trust the first proxy (Render load balancer)
-app.use(morgan('dev'));
+// app.use(morgan('dev')); // Commented out to reduce console noise in production
 
 // Make io accessible in routes
 app.use((req, res, next) => {

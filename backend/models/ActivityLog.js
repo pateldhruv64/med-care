@@ -9,12 +9,12 @@ const activityLogSchema = new mongoose.Schema({
     action: {
         type: String,
         required: true,
-        enum: ['CREATE', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT', 'VIEW', 'UPLOAD', 'DOWNLOAD', 'STATUS_CHANGE'],
+        enum: ['CREATE', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT', 'VIEW', 'UPLOAD', 'DOWNLOAD', 'STATUS_CHANGE', 'CHECK_IN', 'CHECK_OUT'],
     },
     entity: {
         type: String,
         required: true,
-        enum: ['Patient', 'Doctor', 'Appointment', 'Invoice', 'Medicine', 'Prescription', 'LabReport', 'MedicalHistory', 'Bed', 'Notification', 'User', 'Profile'],
+        enum: ['Patient', 'Doctor', 'Appointment', 'Invoice', 'Medicine', 'Prescription', 'LabReport', 'MedicalHistory', 'Bed', 'Notification', 'User', 'Profile', 'Attendance', 'Review'],
     },
     entityId: {
         type: mongoose.Schema.Types.ObjectId,
