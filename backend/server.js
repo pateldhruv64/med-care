@@ -59,6 +59,7 @@ app.use(cors({
 }));
 app.use(cookieParser());
 app.use(helmet());
+app.set('trust proxy', 1); // Trust the first proxy (Render load balancer)
 app.use(morgan('dev'));
 
 // Make io accessible in routes
