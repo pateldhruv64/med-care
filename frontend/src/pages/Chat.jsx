@@ -192,7 +192,7 @@ const Chat = () => {
                             >
                                 <div className="relative">
                                     {u.profileImage ? (
-                                        <img src={u.profileImage} alt="" className="w-10 h-10 rounded-full object-cover" />
+                                        <img src={u.profileImage} alt="" crossOrigin="anonymous" className="w-10 h-10 rounded-full object-cover" />
                                     ) : (
                                         <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-bold">
                                             {getInitials(u.firstName, u.lastName)}
@@ -231,7 +231,7 @@ const Chat = () => {
                         <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-white z-10">
                             <div className="flex items-center gap-3">
                                 {selectedUser.profileImage ? (
-                                    <img src={selectedUser.profileImage} alt="" className="w-10 h-10 rounded-full object-cover" />
+                                    <img src={selectedUser.profileImage} alt="" crossOrigin="anonymous" className="w-10 h-10 rounded-full object-cover" />
                                 ) : (
                                     <div className="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-700 font-bold">
                                         {getInitials(selectedUser.firstName, selectedUser.lastName)}

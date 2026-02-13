@@ -123,7 +123,7 @@ const Appointments = () => {
                                 {(() => {
                                     const person = user.role === 'Patient' ? apt.doctor : apt.patient;
                                     return person?.profileImage ? (
-                                        <img src={person.profileImage} alt="" className="w-12 h-12 rounded-xl object-cover ring-2 ring-slate-100 shadow-sm" />
+                                        <img src={person.profileImage} alt="" crossOrigin="anonymous" className="w-12 h-12 rounded-xl object-cover ring-2 ring-slate-100 shadow-sm" />
                                     ) : (
                                         <div className="w-12 h-12 bg-cyan-50 rounded-xl flex items-center justify-center text-cyan-600 font-bold shadow-sm">
                                             {person?.firstName?.[0]}{person?.lastName?.[0]}
