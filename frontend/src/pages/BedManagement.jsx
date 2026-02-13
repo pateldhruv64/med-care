@@ -23,13 +23,13 @@ const statusDot = {
 };
 
 const wardColors = {
-    General: 'bg-slate-50 border-slate-200',
-    ICU: 'bg-red-50 border-red-200',
-    Private: 'bg-purple-50 border-purple-200',
-    'Semi-Private': 'bg-indigo-50 border-indigo-200',
-    Emergency: 'bg-orange-50 border-orange-200',
-    Maternity: 'bg-pink-50 border-pink-200',
-    Pediatric: 'bg-teal-50 border-teal-200',
+    General: 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700',
+    ICU: 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800',
+    Private: 'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800',
+    'Semi-Private': 'bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800',
+    Emergency: 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800',
+    Maternity: 'bg-pink-50 dark:bg-pink-900/20 border-pink-200 dark:border-pink-800',
+    Pediatric: 'bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800',
 };
 
 const BedManagement = () => {
@@ -215,8 +215,8 @@ const BedManagement = () => {
                         <div key={bed._id} className={`rounded-xl border shadow-sm p-4 ${wardColors[bed.ward] || 'bg-white border-slate-200'}`}>
                             <div className="flex justify-between items-start mb-3">
                                 <div>
-                                    <h3 className="font-bold text-slate-800">Room {bed.roomNumber}</h3>
-                                    <p className="text-xs text-slate-500">Bed {bed.bedNumber} • {bed.ward}</p>
+                                    <h3 className="font-bold text-slate-800 dark:text-slate-100">Room {bed.roomNumber}</h3>
+                                    <p className="text-xs text-slate-500 dark:text-slate-400">Bed {bed.bedNumber} • {bed.ward}</p>
                                 </div>
                                 <div className="flex items-center gap-1.5">
                                     <span className={`w-2 h-2 rounded-full ${statusDot[bed.status]}`}></span>
@@ -225,13 +225,13 @@ const BedManagement = () => {
                             </div>
 
                             {bed.status === 'Occupied' && bed.patient && (
-                                <div className="bg-white/70 rounded-lg p-2.5 mb-3 border border-slate-100">
-                                    <p className="text-sm font-medium text-slate-800">{bed.patient.firstName} {bed.patient.lastName}</p>
-                                    <p className="text-xs text-slate-500">Since {new Date(bed.admissionDate).toLocaleDateString()}</p>
+                                <div className="bg-white/70 dark:bg-slate-700/50 rounded-lg p-2.5 mb-3 border border-slate-100 dark:border-slate-600">
+                                    <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{bed.patient.firstName} {bed.patient.lastName}</p>
+                                    <p className="text-xs text-slate-500 dark:text-slate-400">Since {new Date(bed.admissionDate).toLocaleDateString()}</p>
                                 </div>
                             )}
 
-                            <div className="flex justify-between items-center text-xs text-slate-500 mb-3">
+                            <div className="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 mb-3">
                                 <span>₹{bed.dailyRate}/day</span>
                             </div>
 
