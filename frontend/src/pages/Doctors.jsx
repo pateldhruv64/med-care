@@ -123,7 +123,7 @@ const Doctors = () => {
                             >
                                 <div className="flex items-start gap-4">
                                     {doctor.profileImage ? (
-                                        <img src={doctor.profileImage} alt="" className="w-16 h-16 rounded-full object-cover shadow-lg ring-2 ring-cyan-200" />
+                                        <img src={doctor.profileImage} alt="" crossOrigin="anonymous" className="w-16 h-16 rounded-full object-cover shadow-lg ring-2 ring-cyan-200" />
                                     ) : (
                                         <div className="w-16 h-16 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-cyan-500/30">
                                             {doctor.firstName[0]}

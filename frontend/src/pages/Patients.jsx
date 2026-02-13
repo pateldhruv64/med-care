@@ -106,7 +106,7 @@ const Patients = () => {
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
                                             {patient.profileImage ? (
-                                                <img src={patient.profileImage} alt="" className="w-10 h-10 rounded-full object-cover ring-2 ring-slate-100" />
+                                                <img src={patient.profileImage} alt="" crossOrigin="anonymous" className="w-10 h-10 rounded-full object-cover ring-2 ring-slate-100" />
                                             ) : (
                                                 <div className="w-10 h-10 bg-cyan-100 rounded-full flex items-center justify-center text-cyan-600 font-bold">
                                                     {patient.firstName[0]}
