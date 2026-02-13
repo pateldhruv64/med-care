@@ -17,7 +17,7 @@ const authUser = async (req, res) => {
         const match = await user.matchPassword(password);
         console.log(`Password Match: ${match}`);
         if (match) {
-            generateToken(res, user._id, user.role);
+            const token = generateToken(res, user._id, user.role);
 
             await logActivity({
                 userId: user._id,
@@ -35,6 +35,7 @@ const authUser = async (req, res) => {
                 email: user.email,
                 role: user.role,
                 profileImage: user.profileImage,
+                token,
             });
             return;
         }
@@ -80,7 +81,7 @@ const registerUser = async (req, res) => {
     });
 
     if (user) {
-        generateToken(res, user._id, user.role);
+        const token = generateToken(res, user._id, user.role);
 
         await logActivity({
             userId: user._id,
@@ -97,6 +98,7 @@ const registerUser = async (req, res) => {
             lastName: user.lastName,
             email: user.email,
             role: user.role,
+            token,
         });
     } else {
         res.status(400);
