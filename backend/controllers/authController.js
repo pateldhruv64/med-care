@@ -11,11 +11,11 @@ const authUser = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    console.log(`Login attempt for: ${email}`);
+    // console.log(`Login attempt for: ${email}`);
     if (user) {
-        console.log('User found');
+        // console.log('User found');
         const match = await user.matchPassword(password);
-        console.log(`Password Match: ${match}`);
+        // console.log(`Password Match: ${match}`);
         if (match) {
             const token = generateToken(res, user._id, user.role);
 
@@ -40,7 +40,7 @@ const authUser = async (req, res) => {
             return;
         }
     } else {
-        console.log('User not found');
+        // console.log('User not found');
     }
 
     res.status(401);
