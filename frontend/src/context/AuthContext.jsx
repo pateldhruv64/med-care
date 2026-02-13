@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
             const { data } = await api.get('/users/profile');
             setUser(data);
         } catch (error) {
+            localStorage.removeItem('token');
             setUser(null);
         } finally {
             setLoading(false);
@@ -26,18 +27,25 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         const { data } = await api.post('/users/login', { email, password });
+        localStorage.setItem('token', data.token);
         setUser(data);
         return data;
     };
 
     const register = async (userData) => {
         const { data } = await api.post('/users/register', userData);
+        localStorage.setItem('token', data.token);
         setUser(data);
         return data;
     };
 
     const logout = async () => {
-        await api.post('/users/logout');
+        try {
+            await api.post('/users/logout');
+        } catch (error) {
+            console.error('Logout failed', error);
+        }
+        localStorage.removeItem('token');
         setUser(null);
     };
 
