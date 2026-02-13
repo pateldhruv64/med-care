@@ -29,11 +29,17 @@ import { Server } from 'socket.io';
 
 dotenv.config();
 
+// Helper to strip trailing slash
+const getOrigin = () => {
+    const url = process.env.FRONTEND_URL || 'http://localhost:5173';
+    return url.endsWith('/') ? url.slice(0, -1) : url;
+};
+
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
-        origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+        origin: getOrigin(),
         credentials: true
     }
 });
@@ -54,7 +60,7 @@ io.on('connection', (socket) => {
 // Middleware
 app.use(express.json());
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: getOrigin(),
     credentials: true
 }));
 app.use(cookieParser());
