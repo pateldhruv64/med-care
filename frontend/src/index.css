@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+
+  .dark body {
+    @apply bg-slate-900 text-slate-100;
+  }
+}
+
+/* Dark mode overrides */
+.dark .bg-white {
+  background-color: #1e293b !important;
+}
+
+.dark .bg-slate-50,
+.dark .bg-gray-50 {
+  background-color: #0f172a !important;
+}
+
+.dark .bg-slate-100 {
+  background-color: #1e293b !important;
+}
+
+
+/* Text colors */
+.dark .text-slate-800,
+.dark .text-slate-900,
+.dark .text-gray-900 {
+  color: #e2e8f0 !important;
+}
+
+.dark .text-slate-700 {
+  color: #cbd5e1 !important;
+}
+
+.dark .text-slate-600 {
+  color: #94a3b8 !important;
+}
+
+.dark .text-slate-500 {
+  color: #64748b !important;
+}
+
+/* Border colors */
+.dark .border-slate-100,
+.dark .border-slate-200 {
+  border-color: #334155 !important;
+}
+
+.dark .border-slate-50 {
+  border-color: #1e293b !important;
+}
+
+.dark .border-slate-800 {
+  border-color: #334155 !important;
+}
+
+/* Form inputs */
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: #0f172a !important;
+  color: #e2e8f0 !important;
+  border-color: #334155 !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Hover states */
+.dark .hover\:bg-slate-50:hover,
+.dark .hover\:bg-slate-100:hover,
+.dark .hover\:bg-gray-100:hover {
+  background-color: #334155 !important;
+}
+
+.dark .hover\:bg-slate-200:hover {
+  background-color: #475569 !important;
+}
+
+/* Divide */
+.dark .divide-slate-50> :not(:first-child),
+.dark .divide-slate-100> :not(:first-child) {
+  border-color: #334155 !important;
+}
+
+/* Shadow adjustments */
+.dark .shadow-sm,
+.dark .shadow-md,
+.dark .shadow-lg {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+.dark .shadow-2xl {
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Stat card light backgrounds in dark mode */
+.dark .bg-cyan-50,
+.dark .bg-blue-50,
+.dark .bg-green-50,
+.dark .bg-amber-50,
+.dark .bg-red-50,
+.dark .bg-purple-50,
+.dark .bg-teal-50 {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Scrollbar */
+.dark ::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
