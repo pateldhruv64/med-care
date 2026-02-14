@@ -6,17 +6,20 @@ import './index.css';
 import { AuthProvider } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
 import { ThemeProvider } from './context/ThemeContext';
+import ErrorBoundary from './components/common/ErrorBoundary';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
-        <BrowserRouter>
-            <ThemeProvider>
-                <AuthProvider>
-                    <SocketProvider>
-                        <App />
-                    </SocketProvider>
-                </AuthProvider>
-            </ThemeProvider>
-        </BrowserRouter>
+        <ErrorBoundary>
+            <BrowserRouter>
+                <ThemeProvider>
+                    <AuthProvider>
+                        <SocketProvider>
+                            <App />
+                        </SocketProvider>
+                    </AuthProvider>
+                </ThemeProvider>
+            </BrowserRouter>
+        </ErrorBoundary>
     </React.StrictMode>,
 );
