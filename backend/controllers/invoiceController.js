@@ -62,7 +62,8 @@ const createInvoice = async (req, res) => {
             .populate('doctor', 'firstName lastName profileImage')
             .populate('createdBy', 'firstName lastName profileImage');
 
-        req.io.emit('invoice_updated', fullInvoice); // Broadcast to all staff
+        // Secure broadcast: Patient + Admin + Receptionist
+        req.io.to(patientId).to('Admin').to('Receptionist').emit('invoice_updated', fullInvoice);
         // END: Real-time list update
 
         await logActivity({
@@ -140,7 +141,8 @@ const updateInvoiceStatus = async (req, res) => {
         .populate('doctor', 'firstName lastName profileImage')
         .populate('createdBy', 'firstName lastName profileImage');
 
-    req.io.emit('invoice_updated', fullInvoice);
+    // Secure broadcast
+    req.io.to(invoice.patient.toString()).to('Admin').to('Receptionist').emit('invoice_updated', fullInvoice);
     // END: Real-time list update
 
     await logActivity({

@@ -26,8 +26,8 @@ const applyLeave = async (req, res) => {
             details: `Applied for ${leaveType} from ${new Date(startDate).toLocaleDateString()} to ${new Date(endDate).toLocaleDateString()}`
         });
 
-        // Real-time update
-        req.io.emit('leave_updated', populatedLeave);
+        // Real-time update - Target user and Admin/HR
+        req.io.to(req.user._id.toString()).to('Admin').to('HR').emit('leave_updated', populatedLeave);
 
         res.status(201).json(populatedLeave);
     } catch (error) {
