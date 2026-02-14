@@ -71,7 +71,8 @@ const getAppointments = async (req, res) => {
     const appointments = await Appointment.find(query)
         .populate('patient', 'firstName lastName email profileImage')
         .populate('doctor', 'firstName lastName doctorDepartment profileImage')
-        .sort({ appointmentDate: 1 });
+        .sort({ appointmentDate: 1 })
+        .lean(); // Optimized with .lean()
 
     res.json(appointments);
 };
