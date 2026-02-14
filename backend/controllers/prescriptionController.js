@@ -36,6 +36,12 @@ const createPrescription = async (req, res) => {
                 type: 'prescription',
                 link: '/records',
             });
+
+            // Notify patient via socket
+            req.io.to(patientId).emit('new_notification', {
+                message: `Dr. ${req.user.firstName} prescribed medicines for: ${diagnosis}`,
+                type: 'prescription'
+            });
         } catch (e) { /* ignore */ }
 
         await logActivity({

@@ -25,8 +25,10 @@ const bookAppointment = async (req, res) => {
 
     if (appointment) {
         // Notify doctors
-        req.io.emit('notification', {
-            message: `New appointment booked for ${appointmentDate}`
+        // Notify doctor about new appointment via socket
+        req.io.to(doctorId).emit('new_notification', {
+            message: `New appointment booked for ${appointmentDate}`,
+            type: 'appointment'
         });
 
         // Notify doctor about new appointment
@@ -97,6 +99,12 @@ const updateAppointmentStatus = async (req, res) => {
 
     appointment.status = status;
     await appointment.save();
+
+    // Notify patient via socket
+    req.io.to(appointment.patient.toString()).emit('new_notification', {
+        message: `Your appointment has been ${status.toLowerCase()}`,
+        type: 'appointment'
+    });
 
     // Notify patient about status change
     try {

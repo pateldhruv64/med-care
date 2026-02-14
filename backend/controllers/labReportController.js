@@ -27,6 +27,12 @@ const createLabReport = async (req, res) => {
                 type: 'lab_report',
                 link: '/lab-reports',
             });
+
+            // Notify patient via socket
+            req.io.to(patientId).emit('new_notification', {
+                message: `A ${testName} test has been ordered for you`,
+                type: 'lab_report'
+            });
         } catch (e) { /* ignore */ }
 
         await logActivity({
@@ -91,6 +97,12 @@ const updateLabReport = async (req, res) => {
                 message: `Your ${report.testName} results are ready`,
                 type: 'lab_report',
                 link: '/lab-reports',
+            });
+
+            // Notify patient via socket
+            req.io.to(report.patient.toString()).emit('new_notification', {
+                message: `Your ${report.testName} results are ready`,
+                type: 'lab_report'
             });
         } catch (e) { /* ignore */ }
     }
