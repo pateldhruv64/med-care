@@ -9,18 +9,19 @@
 </head>
 
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <div
+      style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; color: #333;">
+      <h1>Hospital System Loading...</h1>
+    </div>
+  </div>
   <!-- Global Polyfill & Native Error Logger -->
   <script>
     window.global = window; // Fix for packages needing 'global'
 
-    // IMMEDIATE VISUAL CHECK
-    document.body.style.backgroundColor = 'red';
-    // alert('Debug Start: If you read this, HTML loaded.'); // Commented out to avoid annoyance if loop, but user can uncomment if needed. Let's rely on Red Background.
-
     // Create a debug overlay
     var errorBox = document.createElement('div');
-    errorBox.style.display = 'block'; // Force show immediately to test visibility
+    errorBox.style.display = 'none'; // Hidden by default
     errorBox.style.position = 'fixed';
     errorBox.style.top = '0';
     errorBox.style.left = '0';
