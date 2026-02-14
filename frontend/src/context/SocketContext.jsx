@@ -33,27 +33,34 @@ export const SocketProvider = ({ children }) => {
     useEffect(() => {
         let newSocket;
         if (user) {
-            newSocket = io(import.meta.env.VITE_API_URL || 'http://localhost:5000', {
-                withCredentials: true,
-            });
-            setSocket(newSocket);
+            try {
+                newSocket = io(import.meta.env.VITE_API_URL || 'http://localhost:5000', {
+                    withCredentials: true,
+                });
+                setSocket(newSocket);
 
-            newSocket.emit('join_room', user._id);
+                newSocket.emit('join_room', user._id);
 
-            newSocket.on('receive_message', (message) => {
-                // If the message is NOT from the user themselves, increment message count
-                if (message.sender !== user._id) {
-                    setMessageCount(prev => prev + 1);
-                }
-            });
+                newSocket.on('receive_message', (message) => {
+                    // If the message is NOT from the user themselves, increment message count
+                    if (message.sender !== user._id) {
+                        setMessageCount(prev => prev + 1);
+                    }
+                });
 
-            // Listen for new notifications (system)
-            newSocket.on('new_notification', () => {
-                setNotificationCount(prev => prev + 1);
-            });
+                // Listen for new notifications (system)
+                newSocket.on('new_notification', () => {
+                    setNotificationCount(prev => prev + 1);
+                });
+
+            } catch (error) {
+                console.error("Socket connection failed:", error);
+            }
 
             // Cleanup
-            return () => newSocket.close();
+            return () => {
+                if (newSocket) newSocket.close();
+            };
         } else {
             if (socket) {
                 socket.close();
