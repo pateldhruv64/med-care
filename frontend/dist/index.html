@@ -11,62 +11,9 @@
 </head>
 
 <body>
-  <div id="root">
-    <div
-      style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; color: #333;">
-      <h1>Hospital System Loading...</h1>
-    </div>
-  </div>
-  <!-- Global Polyfill & Native Error Logger -->
+  <div id="root"></div>
   <script>
     window.global = window; // Fix for packages needing 'global'
-
-    // Create a debug overlay
-    var errorBox = document.createElement('div');
-    errorBox.style.display = 'none'; // Hidden by default
-    errorBox.style.position = 'fixed';
-    errorBox.style.top = '0';
-    errorBox.style.left = '0';
-    errorBox.style.width = '100%';
-    errorBox.style.height = '100%';
-    errorBox.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-    errorBox.style.zIndex = '999999';
-    errorBox.style.padding = '20px';
-    errorBox.style.overflow = 'auto';
-    errorBox.style.color = 'black';
-    errorBox.id = 'native-error-box';
-    document.body.appendChild(errorBox);
-
-    function showError(msg) {
-      errorBox.style.display = 'block';
-      var p = document.createElement('p');
-      p.style.borderBottom = '1px solid #ccc';
-      p.style.padding = '10px 0';
-      p.textContent = msg;
-      errorBox.appendChild(p);
-    }
-
-    window.onerror = function (msg, url, lineNo, columnNo, error) {
-      var string = msg.toLowerCase();
-      var substring = "script error";
-      if (string.indexOf(substring) > -1) {
-        showError('Script Error: See Browser Console for Detail');
-      } else {
-        var message = [
-          'Message: ' + msg,
-          'URL: ' + url,
-          'Line: ' + lineNo,
-          'Column: ' + columnNo,
-          'Error object: ' + JSON.stringify(error)
-        ].join(' - ');
-        showError(message);
-      }
-      return false;
-    };
-
-    window.onunhandledrejection = function (event) {
-      showError('Unhandled Rejection: ' + event.reason);
-    };
   </script>
 </body>
 
