@@ -4,7 +4,7 @@ import User from '../models/User.js';
 // @route   GET /api/doctors
 // @access  Private
 const getDoctors = async (req, res) => {
-    const doctors = await User.find({ role: 'Doctor' }).select('-password');
+    const doctors = await User.find({ role: 'Doctor' }).select('-password').lean(); // Optimized with .lean()
     res.json(doctors);
 };
 

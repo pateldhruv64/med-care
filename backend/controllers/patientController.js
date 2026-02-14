@@ -5,7 +5,7 @@ import logActivity from '../utils/logActivity.js';
 // @route   GET /api/patients
 // @access  Private (Admin, Doctor, Receptionist)
 const getPatients = async (req, res) => {
-    const patients = await User.find({ role: 'Patient' }).select('-password');
+    const patients = await User.find({ role: 'Patient' }).select('-password').lean(); // Optimized with .lean()
     res.json(patients);
 };
 
