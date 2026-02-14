@@ -35,7 +35,7 @@ const addBed = async (req, res) => {
     });
 
     // Real-time update - Broadcast to all staff managing beds
-    req.io.emit('bed_updated', bed);
+    req.io.to('Staff').emit('bed_updated', bed);
 
     res.status(201).json(bed);
 };
@@ -88,7 +88,7 @@ const assignBed = async (req, res) => {
     });
 
     // Real-time update
-    req.io.emit('bed_updated', updated);
+    req.io.to('Staff').emit('bed_updated', updated);
 
     res.json(updated);
 };
@@ -175,7 +175,7 @@ const dischargeBed = async (req, res) => {
     });
 
     // Real-time update
-    req.io.emit('bed_updated', bed);
+    req.io.to('Staff').emit('bed_updated', bed);
 
     res.json(bed);
 };
@@ -213,7 +213,7 @@ const updateBed = async (req, res) => {
         .populate('assignedBy', 'firstName lastName profileImage');
 
     // Real-time update
-    req.io.emit('bed_updated', updated);
+    req.io.to('Staff').emit('bed_updated', updated);
 
     res.json(updated);
 };

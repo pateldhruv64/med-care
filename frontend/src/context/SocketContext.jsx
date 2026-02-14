@@ -41,6 +41,16 @@ export const SocketProvider = ({ children }) => {
 
                 newSocket.emit('join_room', user._id);
 
+                // Join role-based room (e.g., 'Admin', 'Doctor')
+                if (user.role) {
+                    newSocket.emit('join_room', user.role);
+                }
+
+                // Join 'Staff' room if not a patient
+                if (user.role !== 'Patient') {
+                    newSocket.emit('join_room', 'Staff');
+                }
+
                 newSocket.on('receive_message', (message) => {
                     // If the message is NOT from the user themselves, increment message count
                     if (message.sender !== user._id) {
