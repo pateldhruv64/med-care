@@ -161,7 +161,7 @@ const Chat = () => {
     };
 
     return (
-        <div className="h-[calc(100vh-2rem)] flex gap-6">
+        <div className="h-[calc(100dvh-2rem)] flex gap-6">
             {/* Users Sidebar */}
             <div className="w-80 bg-white rounded-xl shadow-sm border border-slate-100 flex flex-col overflow-hidden">
                 <div className="p-4 border-b border-slate-100">
