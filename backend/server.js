@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import compression from 'compression'; // added for gzip compression
 import userRoutes from './routes/authRoutes.js';
 import patientRoutes from './routes/patientRoutes.js';
 import doctorRoutes from './routes/doctorRoutes.js';
@@ -64,6 +65,7 @@ app.use(cors({
     credentials: true
 }));
 app.use(cookieParser());
+app.use(compression()); // Compress all responses
 app.use(helmet());
 app.set('trust proxy', 1); // Trust the first proxy (Render load balancer)
 // app.use(morgan('dev')); // Commented out to reduce console noise in production
