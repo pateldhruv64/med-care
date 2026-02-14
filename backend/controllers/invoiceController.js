@@ -48,6 +48,12 @@ const createInvoice = async (req, res) => {
                 type: 'billing',
                 link: '/bills',
             });
+
+            // Notify patient via socket
+            req.io.to(patientId).emit('new_notification', {
+                message: `An invoice of ₹${total} has been generated`,
+                type: 'billing'
+            });
         } catch (e) { /* ignore */ }
 
         await logActivity({
@@ -110,6 +116,12 @@ const updateInvoiceStatus = async (req, res) => {
             message: `Your invoice of ₹${invoice.total} has been marked as paid`,
             type: 'billing',
             link: '/bills',
+        });
+
+        // Notify patient via socket
+        req.io.to(invoice.patient.toString()).emit('new_notification', {
+            message: `Your invoice of ₹${invoice.total} has been marked as paid`,
+            type: 'billing'
         });
     } catch (e) { /* ignore */ }
 

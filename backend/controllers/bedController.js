@@ -67,6 +67,12 @@ const assignBed = async (req, res) => {
             type: 'bed',
             link: '/appointments',
         });
+
+        // Notify patient via socket
+        req.io.to(patientId).emit('new_notification', {
+            message: `You have been assigned to Room ${bed.roomNumber}, Bed ${bed.bedNumber} (${bed.ward} Ward)`,
+            type: 'bed'
+        });
     } catch (e) { /* ignore */ }
 
     await logActivity({
@@ -143,6 +149,12 @@ const dischargeBed = async (req, res) => {
                 message: `You have been discharged from Room ${bed.roomNumber}, Bed ${bed.bedNumber}. A bill of ₹${totalAmount} has been generated.`,
                 type: 'bed',
                 link: '/bills',
+            });
+
+            // Notify patient via socket
+            req.io.to(patientToNotify).emit('new_notification', {
+                message: `You have been discharged from Room ${bed.roomNumber}, Bed ${bed.bedNumber}. A bill of ₹${totalAmount} has been generated.`,
+                type: 'bed'
             });
         } catch (e) { /* ignore */ }
     }
