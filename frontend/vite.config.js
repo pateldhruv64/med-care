@@ -18,5 +18,14 @@ export default defineConfig({
     build: {
         target: 'es2015',
         outDir: 'dist',
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    vendor: ['react', 'react-dom', 'react-router-dom'],
+                    ui: ['framer-motion', 'lucide-react', 'react-toastify', 'chart.js', 'react-chartjs-2'],
+                    utils: ['axios', 'socket.io-client']
+                }
+            }
+        }
     },
 })
