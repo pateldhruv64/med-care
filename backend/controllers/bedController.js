@@ -34,6 +34,9 @@ const addBed = async (req, res) => {
         ipAddress: req.ip,
     });
 
+    // Real-time update - Broadcast to all staff managing beds
+    req.io.emit('bed_updated', bed);
+
     res.status(201).json(bed);
 };
 
@@ -83,6 +86,9 @@ const assignBed = async (req, res) => {
         details: `Patient assigned to Room ${bed.roomNumber}, Bed ${bed.bedNumber}`,
         ipAddress: req.ip,
     });
+
+    // Real-time update
+    req.io.emit('bed_updated', updated);
 
     res.json(updated);
 };
@@ -168,6 +174,9 @@ const dischargeBed = async (req, res) => {
         ipAddress: req.ip,
     });
 
+    // Real-time update
+    req.io.emit('bed_updated', bed);
+
     res.json(bed);
 };
 
@@ -202,6 +211,10 @@ const updateBed = async (req, res) => {
     const updated = await Bed.findById(bed._id)
         .populate('patient', 'firstName lastName email profileImage')
         .populate('assignedBy', 'firstName lastName profileImage');
+
+    // Real-time update
+    req.io.emit('bed_updated', updated);
+
     res.json(updated);
 };
 

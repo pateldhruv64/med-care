@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { AlertTriangle, Package, Clock, XCircle, Shield, Filter } from 'lucide-react';
 import api from '../utils/axiosConfig';
 import { toast } from 'react-toastify';
+import { useSocket } from '../context/SocketContext';
 
 const severityColor = (type) => {
     switch (type) {
@@ -25,6 +26,7 @@ const severityIcon = (type) => {
 };
 
 const InventoryAlerts = () => {
+    const { socket } = useSocket();
     const [alerts, setAlerts] = useState(null);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all');
@@ -32,6 +34,21 @@ const InventoryAlerts = () => {
     useEffect(() => {
         fetchAlerts();
     }, []);
+
+    // Real-time alerts update
+    useEffect(() => {
+        if (!socket) return;
+
+        const handleMedicineUpdate = () => {
+            fetchAlerts(); // Re-fetch alerts when medicines change
+        };
+
+        socket.on('medicine_updated', handleMedicineUpdate);
+
+        return () => {
+            socket.off('medicine_updated', handleMedicineUpdate);
+        };
+    }, [socket]);
 
     const fetchAlerts = async () => {
         try {

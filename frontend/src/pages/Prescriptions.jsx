@@ -3,9 +3,11 @@ import { FileText, Search, Calendar, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '../utils/axiosConfig';
 import { useAuth } from '../context/AuthContext';
+import { useSocket } from '../context/SocketContext';
 
 const Prescriptions = () => {
     const { user } = useAuth();
+    const { socket } = useSocket();
     const [prescriptions, setPrescriptions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
@@ -23,6 +25,21 @@ const Prescriptions = () => {
         };
         fetchPrescriptions();
     }, []);
+
+    // Real-time update listener
+    useEffect(() => {
+        if (!socket) return;
+
+        const handleNewPrescription = (newPrescription) => {
+            setPrescriptions(prev => [newPrescription, ...prev]);
+        };
+
+        socket.on('prescription_created', handleNewPrescription);
+
+        return () => {
+            socket.off('prescription_created', handleNewPrescription);
+        };
+    }, [socket]);
 
     const filtered = prescriptions.filter(p => {
         const patientName = `${p.patient?.firstName} ${p.patient?.lastName}`.toLowerCase();

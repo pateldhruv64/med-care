@@ -42,6 +42,16 @@ const createPrescription = async (req, res) => {
                 message: `Dr. ${req.user.firstName} prescribed medicines for: ${diagnosis}`,
                 type: 'prescription'
             });
+
+            // START: Real-time list update
+            const fullPrescription = await Prescription.findById(prescription._id)
+                .populate('doctor', 'firstName lastName profileImage')
+                .populate('patient', 'firstName lastName profileImage');
+
+            // Notify patient AND doctor (if they are on different devices/views)
+            req.io.to(patientId).emit('prescription_created', fullPrescription);
+            req.io.to(req.user._id.toString()).emit('prescription_created', fullPrescription);
+            // END: Real-time list update
         } catch (e) { /* ignore */ }
 
         await logActivity({

@@ -26,6 +26,9 @@ const applyLeave = async (req, res) => {
             details: `Applied for ${leaveType} from ${new Date(startDate).toLocaleDateString()} to ${new Date(endDate).toLocaleDateString()}`
         });
 
+        // Real-time update
+        req.io.emit('leave_updated', populatedLeave);
+
         res.status(201).json(populatedLeave);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -84,6 +87,9 @@ const updateLeaveStatus = async (req, res) => {
             entityId: leave._id,
             details: `Leave request ${status.toLowerCase()}`
         });
+
+        // Real-time update
+        req.io.emit('leave_updated', populatedLeave);
 
         // Here we could emit a notification to the user using socket.io if implemented globally
         // req.io.to(leave.user._id.toString()).emit('notification', { ... });

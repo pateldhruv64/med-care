@@ -4,10 +4,12 @@ import { motion } from 'framer-motion';
 import { Plus, Calendar, Clock, User, CheckCircle, XCircle, Star } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
+import { useSocket } from '../context/SocketContext';
 import ReviewModal from '../components/doctors/ReviewModal';
 
 const Appointments = () => {
     const { user } = useAuth();
+    const { socket } = useSocket();
     const [appointments, setAppointments] = useState([]);
     const [doctors, setDoctors] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -32,6 +34,23 @@ const Appointments = () => {
             fetchReviewedAppointments();
         }
     }, [appointments]);
+
+    // Listen for real-time status updates
+    useEffect(() => {
+        if (!socket) return;
+
+        const handleStatusUpdate = ({ appointmentId, status }) => {
+            setAppointments(prev => prev.map(apt =>
+                apt._id === appointmentId ? { ...apt, status } : apt
+            ));
+        };
+
+        socket.on('appointment_status_updated', handleStatusUpdate);
+
+        return () => {
+            socket.off('appointment_status_updated', handleStatusUpdate);
+        };
+    }, [socket]);
 
     const fetchAppointments = async () => {
         try {
