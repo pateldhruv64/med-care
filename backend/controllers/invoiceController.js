@@ -56,6 +56,15 @@ const createInvoice = async (req, res) => {
             });
         } catch (e) { /* ignore */ }
 
+        // START: Real-time list update
+        const fullInvoice = await Invoice.findById(invoice._id)
+            .populate('patient', 'firstName lastName email profileImage')
+            .populate('doctor', 'firstName lastName profileImage')
+            .populate('createdBy', 'firstName lastName profileImage');
+
+        req.io.emit('invoice_updated', fullInvoice); // Broadcast to all staff
+        // END: Real-time list update
+
         await logActivity({
             userId: req.user._id,
             action: 'CREATE',
@@ -124,6 +133,15 @@ const updateInvoiceStatus = async (req, res) => {
             type: 'billing'
         });
     } catch (e) { /* ignore */ }
+
+    // START: Real-time list update
+    const fullInvoice = await Invoice.findById(invoice._id)
+        .populate('patient', 'firstName lastName email profileImage')
+        .populate('doctor', 'firstName lastName profileImage')
+        .populate('createdBy', 'firstName lastName profileImage');
+
+    req.io.emit('invoice_updated', fullInvoice);
+    // END: Real-time list update
 
     await logActivity({
         userId: req.user._id,

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { BedDouble, Plus, X, UserPlus, LogOut, Search, Wrench } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
+import { useSocket } from '../context/SocketContext';
 import api from '../utils/axiosConfig';
 
 const WARDS = ['General', 'ICU', 'Private', 'Semi-Private', 'Emergency', 'Maternity', 'Pediatric'];
@@ -34,6 +35,7 @@ const wardColors = {
 
 const BedManagement = () => {
     const { user } = useAuth();
+    const { socket } = useSocket();
     const [beds, setBeds] = useState([]);
     const [patients, setPatients] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -48,6 +50,28 @@ const BedManagement = () => {
     useEffect(() => {
         fetchData();
     }, []);
+
+    // Real-time update listener
+    useEffect(() => {
+        if (!socket) return;
+
+        const handleBedUpdate = (updatedBed) => {
+            setBeds(prev => {
+                const exists = prev.find(b => b._id === updatedBed._id);
+                if (exists) {
+                    return prev.map(b => b._id === updatedBed._id ? updatedBed : b);
+                } else {
+                    return [...prev, updatedBed];
+                }
+            });
+        };
+
+        socket.on('bed_updated', handleBedUpdate);
+
+        return () => {
+            socket.off('bed_updated', handleBedUpdate);
+        };
+    }, [socket]);
 
     const fetchData = async () => {
         try {

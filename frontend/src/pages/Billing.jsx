@@ -4,11 +4,13 @@ import { motion } from 'framer-motion';
 import { FileText, DollarSign, Plus, CheckCircle, Printer } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
+import { useSocket } from '../context/SocketContext';
 import CreateInvoiceModal from '../components/billing/CreateInvoiceModal';
 import InvoicePrintModal from '../components/billing/InvoicePrintModal';
 
 const Billing = () => {
     const { user } = useAuth();
+    const { socket } = useSocket();
     const [invoices, setInvoices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -17,6 +19,28 @@ const Billing = () => {
     useEffect(() => {
         fetchInvoices();
     }, []);
+
+    // Real-time invoice updates
+    useEffect(() => {
+        if (!socket) return;
+
+        const handleInvoiceUpdate = (updatedInvoice) => {
+            setInvoices(prev => {
+                const exists = prev.find(inv => inv._id === updatedInvoice._id);
+                if (exists) {
+                    return prev.map(inv => inv._id === updatedInvoice._id ? updatedInvoice : inv);
+                } else {
+                    return [updatedInvoice, ...prev];
+                }
+            });
+        };
+
+        socket.on('invoice_updated', handleInvoiceUpdate);
+
+        return () => {
+            socket.off('invoice_updated', handleInvoiceUpdate);
+        };
+    }, [socket]);
 
     const fetchInvoices = async () => {
         try {

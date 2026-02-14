@@ -4,9 +4,11 @@ import { motion } from 'framer-motion';
 import { Archive, Plus, Trash2, Edit, X } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
+import { useSocket } from '../context/SocketContext';
 
 const Pharmacy = () => {
     const { user } = useAuth();
+    const { socket } = useSocket();
     const [medicines, setMedicines] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
@@ -23,6 +25,30 @@ const Pharmacy = () => {
     useEffect(() => {
         fetchMedicines();
     }, []);
+
+    // Real-time medicine updates
+    useEffect(() => {
+        if (!socket) return;
+
+        const handleMedicineUpdate = ({ action, medicine, id }) => {
+            setMedicines(prev => {
+                if (action === 'create') {
+                    return [...prev, medicine].sort((a, b) => a.name.localeCompare(b.name));
+                } else if (action === 'update') {
+                    return prev.map(m => m._id === medicine._id ? medicine : m);
+                } else if (action === 'delete') {
+                    return prev.filter(m => m._id !== id);
+                }
+                return prev;
+            });
+        };
+
+        socket.on('medicine_updated', handleMedicineUpdate);
+
+        return () => {
+            socket.off('medicine_updated', handleMedicineUpdate);
+        };
+    }, [socket]);
 
     const fetchMedicines = async () => {
         try {

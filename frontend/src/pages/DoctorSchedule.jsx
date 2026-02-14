@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, ChevronLeft, ChevronRight, Clock, User, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useSocket } from '../context/SocketContext';
 import api from '../utils/axiosConfig';
 
 const statusColors = {
@@ -20,6 +21,7 @@ const statusBadge = {
 
 const DoctorSchedule = () => {
     const { user } = useAuth();
+    const { socket } = useSocket();
     const [appointments, setAppointments] = useState([]);
     const [doctors, setDoctors] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -45,6 +47,29 @@ const DoctorSchedule = () => {
         };
         fetchData();
     }, []);
+
+    // Real-time updates
+    useEffect(() => {
+        if (!socket) return;
+
+        const handleNewAppointment = (newAppt) => {
+            setAppointments(prev => [...prev, newAppt]);
+        };
+
+        const handleStatusUpdate = ({ appointmentId, status }) => {
+            setAppointments(prev => prev.map(apt =>
+                apt._id === appointmentId ? { ...apt, status } : apt
+            ));
+        };
+
+        socket.on('appointment_created', handleNewAppointment);
+        socket.on('appointment_status_updated', handleStatusUpdate);
+
+        return () => {
+            socket.off('appointment_created', handleNewAppointment);
+            socket.off('appointment_status_updated', handleStatusUpdate);
+        };
+    }, [socket]);
 
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();

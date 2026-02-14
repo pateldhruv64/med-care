@@ -24,12 +24,19 @@ const bookAppointment = async (req, res) => {
     });
 
     if (appointment) {
-        // Notify doctors
         // Notify doctor about new appointment via socket
         req.io.to(doctorId).emit('new_notification', {
-            message: `New appointment booked for ${appointmentDate}`,
+            message: `New appointment booked for ${new Date(appointmentDate).toLocaleDateString()}`,
             type: 'appointment'
         });
+
+        // START: Real-time list update
+        const fullAppointment = await Appointment.findById(appointment._id)
+            .populate('patient', 'firstName lastName email profileImage')
+            .populate('doctor', 'firstName lastName profileImage'); // Populate doctor too just in case
+
+        req.io.to(doctorId).emit('appointment_created', fullAppointment);
+        // END: Real-time list update
 
         // Notify doctor about new appointment
         try {
@@ -105,6 +112,13 @@ const updateAppointmentStatus = async (req, res) => {
         message: `Your appointment has been ${status.toLowerCase()}`,
         type: 'appointment'
     });
+
+    // START: Add this specifically for real-time list update
+    req.io.to(appointment.patient.toString()).emit('appointment_status_updated', {
+        appointmentId: appointment._id,
+        status: status
+    });
+    // END: Real-time list update
 
     // Notify patient about status change
     try {

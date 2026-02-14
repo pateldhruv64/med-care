@@ -33,6 +33,16 @@ const createLabReport = async (req, res) => {
                 message: `A ${testName} test has been ordered for you`,
                 type: 'lab_report'
             });
+
+            // START: Real-time list update
+            const fullReport = await LabReport.findById(report._id)
+                .populate('patient', 'firstName lastName email profileImage')
+                .populate('doctor', 'firstName lastName profileImage')
+                .populate('orderedBy', 'firstName lastName profileImage');
+
+            req.io.to(patientId).emit('lab_report_updated', fullReport);
+            req.io.to(req.user._id.toString()).emit('lab_report_updated', fullReport); // Notify doctor/admin who created it
+            // END: Real-time list update
         } catch (e) { /* ignore */ }
 
         await logActivity({
@@ -105,6 +115,15 @@ const updateLabReport = async (req, res) => {
                 type: 'lab_report'
             });
         } catch (e) { /* ignore */ }
+
+        // START: Real-time list update (Outside try/catch to ensure it runs)
+        const fullReport = await LabReport.findById(report._id)
+            .populate('patient', 'firstName lastName email profileImage')
+            .populate('doctor', 'firstName lastName profileImage');
+
+        req.io.to(report.patient.toString()).emit('lab_report_updated', fullReport);
+        if (report.doctor) req.io.to(report.doctor.toString()).emit('lab_report_updated', fullReport);
+        // END: Real-time list update
     }
 
     await report.save();

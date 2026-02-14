@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FlaskConical, Plus, X, Search, Filter, FileText, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
+import { useSocket } from '../context/SocketContext';
 import api from '../utils/axiosConfig';
 
 const TEST_CATEGORIES = ['Blood Test', 'Urine Test', 'X-Ray', 'MRI', 'CT Scan', 'Ultrasound', 'ECG', 'Other'];
@@ -26,6 +27,7 @@ const categoryColors = {
 
 const LabReports = () => {
     const { user } = useAuth();
+    const { socket } = useSocket();
     const [reports, setReports] = useState([]);
     const [patients, setPatients] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -52,6 +54,28 @@ const LabReports = () => {
             fetchPatients();
         }
     }, []);
+
+    // Real-time update listener
+    useEffect(() => {
+        if (!socket) return;
+
+        const handleReportUpdate = (updatedReport) => {
+            setReports(prev => {
+                const exists = prev.find(r => r._id === updatedReport._id);
+                if (exists) {
+                    return prev.map(r => r._id === updatedReport._id ? updatedReport : r);
+                } else {
+                    return [updatedReport, ...prev];
+                }
+            });
+        };
+
+        socket.on('lab_report_updated', handleReportUpdate);
+
+        return () => {
+            socket.off('lab_report_updated', handleReportUpdate);
+        };
+    }, [socket]);
 
     const fetchReports = async () => {
         try {

@@ -34,6 +34,9 @@ const addMedicine = async (req, res) => {
             ipAddress: req.ip,
         });
 
+        // Real-time update
+        req.io.emit('medicine_updated', { action: 'create', medicine });
+
         res.status(201).json(medicine);
     } else {
         res.status(400);
@@ -71,6 +74,9 @@ const updateMedicine = async (req, res) => {
         ipAddress: req.ip,
     });
 
+    // Real-time update
+    req.io.emit('medicine_updated', { action: 'update', medicine });
+
     res.json(medicine);
 };
 
@@ -93,6 +99,9 @@ const deleteMedicine = async (req, res) => {
         details: `Medicine deleted: ${medicine.name}`,
         ipAddress: req.ip,
     });
+
+    // Real-time update
+    req.io.emit('medicine_updated', { action: 'delete', id: req.params.id });
 
     await medicine.deleteOne();
     res.json({ message: 'Medicine removed' });
