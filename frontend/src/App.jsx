@@ -1,9 +1,10 @@
-import React, { Suspense, lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingFallback from './components/common/LoadingFallback';
 import { useAuth } from './context/AuthContext';
+import { useTheme } from './context/ThemeContext';
 
 // Lazy Load Pages
 const Layout = lazy(() => import('./components/layout/Layout'));
@@ -37,6 +38,7 @@ const Chat = lazy(() => import('./pages/Chat'));
 
 function App() {
   const { user } = useAuth();
+  const { darkMode } = useTheme();
 
   return (
     <>
@@ -87,7 +89,10 @@ function App() {
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </Suspense>
-      <ToastContainer position="top-right" theme="dark" />
+      <ToastContainer
+        position="top-right"
+        theme={darkMode ? 'dark' : 'light'}
+      />
     </>
   );
 }
