@@ -30,40 +30,74 @@ import { Server } from 'socket.io';
 
 dotenv.config();
 
-// Helper to strip trailing slash
-const getOrigin = () => {
-    const url = process.env.FRONTEND_URL || 'http://localhost:5173';
-    return url.endsWith('/') ? url.slice(0, -1) : url;
+const normalizeOrigin = (url = '') => url.trim().replace(/\/+$/, '');
+
+const getAllowedOrigins = () => {
+  const configured = (process.env.FRONTEND_URL || 'http://localhost:5173')
+    .split(',')
+    .map(normalizeOrigin)
+    .filter(Boolean);
+
+  if (process.env.NODE_ENV === 'development') {
+    return [
+      ...new Set([
+        ...configured,
+        'http://localhost:5173',
+        'http://localhost:5174',
+        'http://127.0.0.1:5173',
+        'http://127.0.0.1:5174',
+      ]),
+    ];
+  }
+
+  return [...new Set(configured)];
+};
+
+const allowedOrigins = getAllowedOrigins();
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+
+    const normalized = normalizeOrigin(origin);
+    if (allowedOrigins.includes(normalized)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  credentials: true,
 };
 
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
-    cors: {
-        origin: getOrigin(),
-        credentials: true
-    }
+  cors: {
+    origin: allowedOrigins,
+    credentials: true,
+  },
 });
 
 io.on('connection', (socket) => {
-    // console.log('New client connected:', socket.id);
+  // console.log('New client connected:', socket.id);
 
-    socket.on('join_room', (userId) => {
-        socket.join(userId);
-        // console.log(`User ${userId} joined room ${userId}`);
-    });
+  socket.on('join_room', (userId) => {
+    socket.join(userId);
+    // console.log(`User ${userId} joined room ${userId}`);
+  });
 
-    socket.on('disconnect', () => {
-        // console.log('Client disconnected');
-    });
+  socket.on('disconnect', () => {
+    // console.log('Client disconnected');
+  });
 });
 
 // Middleware
 app.use(express.json());
-app.use(cors({
-    origin: getOrigin(),
-    credentials: true
-}));
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(compression()); // Compress all responses
 app.use(helmet());
@@ -72,14 +106,15 @@ app.set('trust proxy', 1); // Trust the first proxy (Render load balancer)
 
 // Make io accessible in routes
 app.use((req, res, next) => {
-    req.io = io;
-    next();
+  req.io = io;
+  next();
 });
 
 // Database Connection
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('MongoDB Connected'))
-    .catch(err => console.log(err));
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB Connected'))
+  .catch((err) => console.log(err));
 
 // Routes
 app.use('/api/users', userRoutes);
@@ -101,7 +136,7 @@ app.use('/api/leaves', leaveRoutes);
 app.use('/api/chat', chatRoutes);
 
 app.get('/', (req, res) => {
-    res.send('API is running...');
+  res.send('API is running...');
 });
 
 // Error Handling Middleware
@@ -111,5 +146,5 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 httpServer.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

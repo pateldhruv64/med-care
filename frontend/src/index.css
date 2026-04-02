@@ -3,121 +3,286 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --app-bg-light: radial-gradient(circle at top right, rgba(14, 165, 233, 0.09) 0%, rgba(248, 250, 252, 1) 42%, rgba(241, 245, 249, 1) 100%);
+    --app-bg-dark: radial-gradient(circle at top right, rgba(8, 145, 178, 0.18) 0%, rgba(2, 6, 23, 1) 52%, rgba(15, 23, 42, 1) 100%);
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-surface-50 text-slate-900 antialiased;
+    background-image: var(--app-bg-light);
+    background-attachment: fixed;
   }
 
   .dark body {
-    @apply bg-slate-900 text-slate-100;
+    @apply bg-surface-950 text-slate-100;
+    background-image: var(--app-bg-dark);
+  }
+
+  input,
+  select,
+  textarea {
+    @apply text-slate-800;
+  }
+
+  .dark input,
+  .dark select,
+  .dark textarea {
+    @apply bg-slate-900 text-slate-100 border-slate-700;
+  }
+
+  .dark input::placeholder,
+  .dark textarea::placeholder {
+    color: rgb(100 116 139 / 1);
+  }
+
+  /* Global compatibility layer for legacy pages that don't yet use explicit dark: classes */
+  .dark .bg-white {
+    @apply bg-slate-900/90;
+  }
+
+  .dark .bg-slate-50,
+  .dark .bg-gray-50 {
+    @apply bg-slate-900/80;
+  }
+
+  .dark .bg-slate-100,
+  .dark .bg-gray-100 {
+    @apply bg-slate-800/90;
+  }
+
+  .dark .text-slate-900,
+  .dark .text-slate-800,
+  .dark .text-gray-900 {
+    @apply text-slate-100;
+  }
+
+  .dark .text-slate-700,
+  .dark .text-gray-700 {
+    @apply text-slate-300;
+  }
+
+  .dark .text-slate-600,
+  .dark .text-gray-600 {
+    @apply text-slate-400;
+  }
+
+  .dark .text-gray-500 {
+    color: rgb(100 116 139 / 1);
+  }
+
+  .dark .border-slate-100,
+  .dark .border-slate-200,
+  .dark .border-gray-100,
+  .dark .border-gray-200 {
+    @apply border-slate-700/70;
+  }
+
+  .dark .divide-slate-100> :not([hidden])~ :not([hidden]),
+  .dark .divide-slate-200> :not([hidden])~ :not([hidden]),
+  .dark .divide-gray-100> :not([hidden])~ :not([hidden]),
+  .dark .divide-gray-200> :not([hidden])~ :not([hidden]) {
+    @apply border-slate-700/70;
+  }
+
+  .dark .hover\:bg-slate-50:hover,
+  .dark .hover\:bg-gray-50:hover {
+    @apply bg-slate-800/60;
+  }
+
+  .dark .hover\:bg-slate-100:hover,
+  .dark .hover\:bg-gray-100:hover {
+    @apply bg-slate-800;
+  }
+
+  .dark .hover\:bg-slate-200:hover,
+  .dark .hover\:bg-gray-200:hover {
+    @apply bg-slate-700;
+  }
+
+  .dark .shadow-sm,
+  .dark .shadow-md,
+  .dark .shadow-lg,
+  .dark .shadow-xl {
+    box-shadow: 0 10px 28px rgba(2, 6, 23, 0.45);
+  }
+
+  /* Status and semantic color compatibility for legacy badge/chip classes */
+  .dark .bg-green-50,
+  .dark .bg-green-100 {
+    @apply bg-emerald-500/20;
+  }
+
+  .dark .text-green-600,
+  .dark .text-green-700 {
+    @apply text-emerald-300;
+  }
+
+  .dark .bg-red-50,
+  .dark .bg-red-100 {
+    @apply bg-rose-500/20;
+  }
+
+  .dark .text-red-600,
+  .dark .text-red-700 {
+    @apply text-rose-300;
+  }
+
+  .dark .bg-yellow-50,
+  .dark .bg-yellow-100,
+  .dark .bg-amber-50,
+  .dark .bg-orange-100 {
+    @apply bg-amber-500/20;
+  }
+
+  .dark .text-yellow-600,
+  .dark .text-yellow-700,
+  .dark .text-orange-700,
+  .dark .text-amber-700 {
+    @apply text-amber-300;
+  }
+
+  .dark .bg-blue-50,
+  .dark .bg-blue-100,
+  .dark .bg-cyan-50,
+  .dark .bg-cyan-100 {
+    @apply bg-cyan-500/20;
+  }
+
+  .dark .text-blue-600,
+  .dark .text-blue-700,
+  .dark .text-cyan-600,
+  .dark .text-cyan-700 {
+    @apply text-cyan-300;
+  }
+
+  .dark .bg-purple-50,
+  .dark .bg-purple-100,
+  .dark .bg-teal-50 {
+    @apply bg-violet-500/20;
+  }
+
+  .dark .text-purple-600,
+  .dark .text-purple-700,
+  .dark .text-teal-700 {
+    @apply text-violet-300;
   }
 }
 
-/* Dark mode overrides */
-.dark .bg-white {
-  background-color: #1e293b !important;
+@layer components {
+  .ui-card {
+    @apply rounded-2xl border border-slate-200/70 bg-white shadow-soft;
+  }
+
+  .ui-card-glass {
+    @apply rounded-2xl border border-slate-200/80 bg-white/90 shadow-glass backdrop-blur-sm;
+  }
+
+  .dark .ui-card {
+    @apply border-slate-700/70 bg-slate-900/80 shadow-soft-dark;
+  }
+
+  .dark .ui-card-glass {
+    @apply border-slate-700/80 bg-slate-900/90 shadow-soft-dark;
+  }
+
+  .ui-btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-250 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .dark .ui-btn {
+    @apply focus-visible:ring-offset-slate-900;
+  }
+
+  .ui-btn-primary {
+    @apply bg-brand-500 text-white shadow-sm hover:bg-brand-600;
+  }
+
+  .ui-btn-secondary {
+    @apply bg-slate-100 text-slate-700 hover:bg-slate-200;
+  }
+
+  .ui-btn-ghost {
+    @apply bg-transparent text-slate-600 hover:bg-slate-100;
+  }
+
+  .ui-btn-danger {
+    @apply bg-danger-500 text-white hover:bg-danger-700;
+  }
+
+  .dark .ui-btn-secondary {
+    @apply bg-slate-800 text-slate-200 hover:bg-slate-700;
+  }
+
+  .dark .ui-btn-ghost {
+    @apply text-slate-300 hover:bg-slate-800;
+  }
+
+  .ui-input {
+    @apply w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 shadow-sm transition-colors duration-200 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20;
+  }
+
+  .dark .ui-input {
+    @apply border-slate-700 bg-slate-900 text-slate-100;
+  }
+
+  .dark .ui-input::placeholder {
+    color: rgb(100 116 139 / 1);
+  }
+
+  .ui-page-title {
+    @apply text-2xl font-bold tracking-tight text-slate-900;
+  }
+
+  .dark .ui-page-title {
+    @apply text-slate-100;
+  }
+
+  .ui-subtitle {
+    @apply text-sm text-slate-500;
+  }
+
+  .dark .ui-subtitle {
+    @apply text-slate-400;
+  }
+
+  .ui-badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold;
+  }
 }
 
-.dark .bg-slate-50,
-.dark .bg-gray-50 {
-  background-color: #0f172a !important;
-}
+@layer utilities {
+  .app-shell-bg {
+    background-image: var(--app-bg-light);
+    background-attachment: fixed;
+  }
 
-.dark .bg-slate-100 {
-  background-color: #1e293b !important;
-}
+  .dark .app-shell-bg {
+    background-image: var(--app-bg-dark);
+  }
 
+  .scrollbar-soft {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(100, 116, 139, 0.55) transparent;
+  }
 
-/* Text colors */
-.dark .text-slate-800,
-.dark .text-slate-900,
-.dark .text-gray-900 {
-  color: #e2e8f0 !important;
-}
+  .scrollbar-soft::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
 
-.dark .text-slate-700 {
-  color: #cbd5e1 !important;
-}
+  .scrollbar-soft::-webkit-scrollbar-thumb {
+    background-color: rgba(100, 116, 139, 0.55);
+    border-radius: 999px;
+  }
 
-.dark .text-slate-600 {
-  color: #94a3b8 !important;
-}
-
-.dark .text-slate-500 {
-  color: #64748b !important;
-}
-
-/* Border colors */
-.dark .border-slate-100,
-.dark .border-slate-200 {
-  border-color: #334155 !important;
-}
-
-.dark .border-slate-50 {
-  border-color: #1e293b !important;
-}
-
-.dark .border-slate-800 {
-  border-color: #334155 !important;
-}
-
-/* Form inputs */
-.dark input,
-.dark select,
-.dark textarea {
-  background-color: #0f172a !important;
-  color: #e2e8f0 !important;
-  border-color: #334155 !important;
-}
-
-.dark input::placeholder,
-.dark textarea::placeholder {
-  color: #64748b !important;
-}
-
-/* Hover states */
-.dark .hover\:bg-slate-50:hover,
-.dark .hover\:bg-slate-100:hover,
-.dark .hover\:bg-gray-100:hover {
-  background-color: #334155 !important;
-}
-
-.dark .hover\:bg-slate-200:hover {
-  background-color: #475569 !important;
-}
-
-/* Divide */
-.dark .divide-slate-50> :not(:first-child),
-.dark .divide-slate-100> :not(:first-child) {
-  border-color: #334155 !important;
-}
-
-/* Shadow adjustments */
-.dark .shadow-sm,
-.dark .shadow-md,
-.dark .shadow-lg {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
-}
-
-.dark .shadow-2xl {
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5) !important;
-}
-
-/* Stat card light backgrounds in dark mode */
-.dark .bg-cyan-50,
-.dark .bg-blue-50,
-.dark .bg-green-50,
-.dark .bg-amber-50,
-.dark .bg-red-50,
-.dark .bg-purple-50,
-.dark .bg-teal-50 {
-  background-color: rgba(255, 255, 255, 0.05) !important;
-}
-
-/* Scrollbar */
-.dark ::-webkit-scrollbar-track {
-  background: #0f172a;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-  background: #334155;
+  .scrollbar-soft::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
 }

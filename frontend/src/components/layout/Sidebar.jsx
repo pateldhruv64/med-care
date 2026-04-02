@@ -4,98 +4,114 @@ import { useSocket } from '../../context/SocketContext';
 import { getSidebarItems } from '../../data/sidebarItems';
 import { LogOut, X } from 'lucide-react';
 import classNames from 'classnames';
+import Button from '../ui/Button';
+import Badge from '../ui/Badge';
+import Avatar from '../ui/Avatar';
 
 const Sidebar = ({ isOpen, onClose }) => {
-    const { user, logout } = useAuth();
-    const { messageCount } = useSocket();
-    const items = getSidebarItems(user?.role || 'Guest');
+  const { user, logout } = useAuth();
+  const { messageCount } = useSocket();
+  const items = getSidebarItems(user?.role || 'Guest');
 
-    return (
-        <>
-            {/* Mobile overlay */}
-            {isOpen && (
-                <div
-                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-                    onClick={onClose}
-                />
-            )}
+  return (
+    <>
+      {isOpen ? (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={onClose}
+        />
+      ) : null}
 
-            <div className={classNames(
-                'h-screen bg-slate-900 text-white flex flex-col fixed left-0 top-0 shadow-lg z-50 transition-transform duration-300',
-                'w-64',
-                // On large screens: always visible
-                'lg:translate-x-0',
-                // On small/medium screens: slide in/out
-                isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-            )}>
-                <div className="p-6 text-2xl font-bold text-cyan-400 flex items-center justify-between">
-                    <span>🏥 MedCare</span>
-                    <button onClick={onClose} className="lg:hidden text-slate-400 hover:text-white">
-                        <X size={22} />
-                    </button>
-                </div>
+      <aside
+        className={classNames(
+          'fixed left-0 top-0 z-50 flex h-screen w-64 flex-col border-r border-white/10 bg-gradient-to-b from-slate-950/95 via-slate-900 to-slate-950 text-slate-100 shadow-soft-dark backdrop-blur-lg transition-transform duration-300',
+          'lg:translate-x-0',
+          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+        )}
+      >
+        <div className="px-5 py-5 border-b border-white/10 flex items-center justify-between gap-2">
+          <div className="min-w-0">
+            <p className="text-xs uppercase tracking-[0.18em] text-brand-300/90 font-semibold">
+              MedCare Suite
+            </p>
+            <h2 className="text-xl font-bold text-white truncate">
+              Hospital Console
+            </h2>
+          </div>
 
-                <nav className="flex-1 px-4 space-y-1 mt-4 overflow-y-auto scrollbar-thin" style={{ scrollbarWidth: 'thin', scrollbarColor: '#475569 transparent' }}>
-                    {items.map((item) => (
-                        <NavLink
-                            key={item.path}
-                            to={item.path}
-                            onClick={onClose}
-                            className={({ isActive }) =>
-                                classNames(
-                                    'flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 relative',
-                                    isActive
-                                        ? 'bg-cyan-600 text-white shadow-md'
-                                        : 'text-gray-400 hover:bg-slate-800 hover:text-cyan-300'
-                                )
-                            }
-                        >
-                            <item.icon size={20} />
-                            <span className="font-medium">{item.name}</span>
-                            {item.name === 'Messages' && messageCount > 0 && (
-                                <span className="absolute right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                                    {messageCount > 9 ? '9+' : messageCount}
-                                </span>
-                            )}
-                        </NavLink>
-                    ))}
-                </nav>
+          <Button
+            onClick={onClose}
+            variant="ghost"
+            size="icon"
+            className="lg:hidden text-slate-300 hover:text-white"
+            aria-label="Close sidebar"
+          >
+            <X size={20} />
+          </Button>
+        </div>
 
-                {/* User Profile Section */}
-                <div className="px-4 py-3 border-t border-slate-800">
-                    <div className="flex items-center gap-3 px-2 py-2">
-                        {user?.profileImage ? (
-                            <img
-                                src={user.profileImage}
-                                alt="Profile"
-                                className="w-9 h-9 rounded-full object-cover ring-2 ring-cyan-500/50 shrink-0"
-                            />
-                        ) : (
-                            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white text-sm font-bold shrink-0">
-                                {user?.firstName?.[0]}{user?.lastName?.[0]}
-                            </div>
-                        )}
-                        <div className="min-w-0 flex-1">
-                            <p className="text-sm font-medium text-slate-200 truncate">
-                                {user?.firstName} {user?.lastName}
-                            </p>
-                            <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">{user?.role}</p>
-                        </div>
-                    </div>
-                </div>
+        <nav className="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto scrollbar-soft">
+          {items.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              onClick={onClose}
+              className={({ isActive }) =>
+                classNames(
+                  'group relative flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-medium transition-all duration-200',
+                  isActive
+                    ? 'bg-brand-500/20 text-cyan-200 border border-brand-400/30 shadow-sm'
+                    : 'text-slate-300 hover:bg-slate-800/90 hover:text-cyan-200',
+                )
+              }
+            >
+              <item.icon size={18} className="shrink-0" />
+              <span className="truncate">{item.name}</span>
 
-                <div className="px-4 pb-4">
-                    <button
-                        onClick={logout}
-                        className="flex items-center gap-3 w-full px-4 py-3 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
-                    >
-                        <LogOut size={20} />
-                        <span className="font-medium">Logout</span>
-                    </button>
-                </div>
+              {item.name === 'Messages' && messageCount > 0 ? (
+                <Badge
+                  variant="danger"
+                  className="absolute right-2 min-w-[1.3rem] h-5 px-1 justify-center"
+                >
+                  {messageCount > 9 ? '9+' : messageCount}
+                </Badge>
+              ) : null}
+            </NavLink>
+          ))}
+        </nav>
+
+        <div className="border-t border-white/10 px-4 py-4 space-y-3">
+          <div className="ui-card-glass px-3 py-3 !bg-white/5 !border-white/10">
+            <div className="flex items-center gap-3">
+              <Avatar
+                name={`${user?.firstName || ''} ${user?.lastName || ''}`}
+                imageSrc={user?.profileImage}
+                size="sm"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-slate-100 truncate">
+                  {user?.firstName} {user?.lastName}
+                </p>
+                <p className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold truncate">
+                  {user?.role}
+                </p>
+              </div>
             </div>
-        </>
-    );
+          </div>
+
+          <Button
+            onClick={logout}
+            variant="ghost"
+            fullWidth
+            className="justify-start text-rose-300 hover:bg-rose-500/10 hover:text-rose-200"
+          >
+            <LogOut size={18} />
+            Logout
+          </Button>
+        </div>
+      </aside>
+    </>
+  );
 };
 
 export default Sidebar;
